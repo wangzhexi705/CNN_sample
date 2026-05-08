@@ -8,7 +8,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="STL-10 image classification")
     parser.add_argument("--mode", choices=["train", "eval"], default="train")
     parser.add_argument("--model", choices=["basic"], default="basic")
-    parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument("--epochs", type=int, default=30)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--val-ratio", type=float, default=0.15)
