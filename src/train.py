@@ -140,10 +140,11 @@ def train_model(config: TrainConfig, model_name: str = "basic"):
     )
     scheduler = CosineAnnealingLR(optimizer, T_max=config.epochs)
 
-    best_valid_acc = 0.0
+    best_valid_acc = -1.0
     history = []
 
     print(f"Device: {device}")
+    print(f"Data augmentation: {config.use_augmentation}")
     print(f"Train batches: {len(train_loader)}, valid batches: {len(valid_loader)}")
 
     for epoch in range(1, config.epochs + 1):

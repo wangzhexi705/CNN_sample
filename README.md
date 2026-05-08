@@ -34,6 +34,8 @@ STL10/
 ```bash
 python main.py --mode train --model basic
 python main.py --mode eval --model basic
+python main.py --mode train --model augmented
+python main.py --mode eval --model augmented
 ```
 
 Useful quick test:
@@ -52,5 +54,14 @@ Training saves:
 
 ```text
 checkpoints/basic_cnn_best.pt
+checkpoints/augmented_cnn_best.pt
 outputs/logs/basic_history.csv
+outputs/logs/augmented_history.csv
+```
+
+Plot curves:
+
+```bash
+python scripts/plot_training_curves.py --model basic
+python scripts/plot_training_curves.py --model augmented
 ```

@@ -57,8 +57,14 @@ class BasicCNN(nn.Module):
                 nn.init.zeros_(module.bias)
 
 
+class AugmentedCNN(BasicCNN):
+    """BasicCNN trained with stronger data augmentation."""
+
+
 def build_model(model_name: str, num_classes: int) -> nn.Module:
     model_name = model_name.lower()
     if model_name == "basic":
         return BasicCNN(num_classes=num_classes)
+    if model_name == "augmented":
+        return AugmentedCNN(num_classes=num_classes)
     raise ValueError(f"Unknown model: {model_name}")

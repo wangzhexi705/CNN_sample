@@ -1,4 +1,5 @@
 import csv
+import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -22,8 +23,12 @@ def load_history(path: Path):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Plot train/valid curves from history csv.")
+    parser.add_argument("--model", default="basic", choices=["basic", "augmented"])
+    args = parser.parse_args()
+
     root = Path(__file__).resolve().parents[1]
-    history_path = root / "outputs" / "logs" / "basic_history.csv"
+    history_path = root / "outputs" / "logs" / f"{args.model}_history.csv"
     figure_dir = root / "outputs" / "figures"
     figure_dir.mkdir(parents=True, exist_ok=True)
 
@@ -39,20 +44,22 @@ def main():
 
     axes[0].plot(epochs, train_loss, marker="o", markersize=3, linewidth=1.8, label="Train Loss")
     axes[0].plot(epochs, valid_loss, marker="s", markersize=3, linewidth=1.8, label="Valid Loss")
-    axes[0].set_title("BasicCNN Loss Curve")
+    model_title = "AugmentedCNN" if args.model == "augmented" else "BasicCNN"
+
+    axes[0].set_title(f"{model_title} Loss Curve")
     axes[0].set_xlabel("Epoch")
     axes[0].set_ylabel("Loss")
     axes[0].legend()
 
     axes[1].plot(epochs, train_acc, marker="o", markersize=3, linewidth=1.8, label="Train Accuracy")
     axes[1].plot(epochs, valid_acc, marker="s", markersize=3, linewidth=1.8, label="Valid Accuracy")
-    axes[1].set_title("BasicCNN Accuracy Curve")
+    axes[1].set_title(f"{model_title} Accuracy Curve")
     axes[1].set_xlabel("Epoch")
     axes[1].set_ylabel("Accuracy")
     axes[1].set_ylim(0.15, 0.72)
     axes[1].legend()
 
-    output_path = figure_dir / "basic_training_curves.png"
+    output_path = figure_dir / f"{args.model}_training_curves.png"
     fig.tight_layout()
     fig.savefig(output_path, bbox_inches="tight")
 

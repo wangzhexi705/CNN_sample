@@ -37,6 +37,7 @@ class TrainConfig:
     num_workers: int = 0
     seed: int = 42
     device: str = "auto"
+    use_augmentation: bool = False
     max_train_samples: Optional[int] = None
     max_valid_samples: Optional[int] = None
     max_test_samples: Optional[int] = None

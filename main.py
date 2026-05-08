@@ -7,7 +7,7 @@ from src.train import evaluate_checkpoint, train_model
 def parse_args():
     parser = argparse.ArgumentParser(description="STL-10 image classification")
     parser.add_argument("--mode", choices=["train", "eval"], default="train")
-    parser.add_argument("--model", choices=["basic"], default="basic")
+    parser.add_argument("--model", choices=["basic", "augmented"], default="basic")
     parser.add_argument("--epochs", type=int, default=30)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-3)
@@ -29,9 +29,11 @@ def main():
         val_ratio=args.val_ratio,
         num_workers=args.num_workers,
         device=args.device,
+        use_augmentation=args.model == "augmented",
         max_train_samples=args.max_train_samples,
         max_valid_samples=args.max_valid_samples,
         max_test_samples=args.max_test_samples,
+        checkpoint_name=f"{args.model}_cnn_best.pt",
     )
 
     if args.mode == "train":

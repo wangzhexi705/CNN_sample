@@ -41,11 +41,29 @@ class STL10FolderDataset(Dataset):
 
 
 def build_transforms(config: TrainConfig, train: bool):
-    if train:
+    if train and config.use_augmentation:
         return transforms.Compose(
             [
                 transforms.RandomCrop(config.image_size, padding=8),
                 transforms.RandomHorizontalFlip(),
+                transforms.ColorJitter(
+                    brightness=0.15,
+                    contrast=0.15,
+                    saturation=0.15,
+                    hue=0.03,
+                ),
+                transforms.ToTensor(),
+                transforms.Normalize(
+                    mean=(0.4467, 0.4398, 0.4066),
+                    std=(0.2603, 0.2566, 0.2713),
+                ),
+            ]
+        )
+
+    if train:
+        return transforms.Compose(
+            [
+                transforms.Resize((config.image_size, config.image_size)),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     mean=(0.4467, 0.4398, 0.4066),
