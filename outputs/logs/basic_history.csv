@@ -1,0 +1,2 @@
+epoch,train_loss,train_accuracy,valid_loss,valid_accuracy
+1,2.29891037940979,0.15625,2.3056552410125732,0.09375

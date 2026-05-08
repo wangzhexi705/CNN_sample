@@ -1,0 +1,44 @@
+import argparse
+
+from src.config import TrainConfig
+from src.train import evaluate_checkpoint, train_model
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="STL-10 image classification")
+    parser.add_argument("--mode", choices=["train", "eval"], default="train")
+    parser.add_argument("--model", choices=["basic"], default="basic")
+    parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument("--batch-size", type=int, default=64)
+    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--val-ratio", type=float, default=0.15)
+    parser.add_argument("--num-workers", type=int, default=0)
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
+    parser.add_argument("--max-train-samples", type=int, default=None)
+    parser.add_argument("--max-valid-samples", type=int, default=None)
+    parser.add_argument("--max-test-samples", type=int, default=None)
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    config = TrainConfig(
+        epochs=args.epochs,
+        batch_size=args.batch_size,
+        learning_rate=args.lr,
+        val_ratio=args.val_ratio,
+        num_workers=args.num_workers,
+        device=args.device,
+        max_train_samples=args.max_train_samples,
+        max_valid_samples=args.max_valid_samples,
+        max_test_samples=args.max_test_samples,
+    )
+
+    if args.mode == "train":
+        train_model(config, model_name=args.model)
+    elif args.mode == "eval":
+        evaluate_checkpoint(config, model_name=args.model)
+
+
+if __name__ == "__main__":
+    main()
