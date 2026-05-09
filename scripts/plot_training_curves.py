@@ -24,11 +24,13 @@ def load_history(path: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Plot train/valid curves from history csv.")
-    parser.add_argument("--model", default="basic", choices=["basic", "augmented"])
+    parser.add_argument("--model", default="basic", choices=["basic", "augmented", "improved"])
+    parser.add_argument("--history-name", default=None)
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parents[1]
-    history_path = root / "outputs" / "logs" / f"{args.model}_history.csv"
+    history_name = args.history_name or args.model
+    history_path = root / "outputs" / "logs" / f"{history_name}_history.csv"
     figure_dir = root / "outputs" / "figures"
     figure_dir.mkdir(parents=True, exist_ok=True)
 
@@ -44,7 +46,11 @@ def main():
 
     axes[0].plot(epochs, train_loss, marker="o", markersize=3, linewidth=1.8, label="Train Loss")
     axes[0].plot(epochs, valid_loss, marker="s", markersize=3, linewidth=1.8, label="Valid Loss")
-    model_title = "AugmentedCNN" if args.model == "augmented" else "BasicCNN"
+    model_title = {
+        "basic": "BasicCNN",
+        "augmented": "AugmentedCNN",
+        "improved": "ImprovedCNN",
+    }[args.model]
 
     axes[0].set_title(f"{model_title} Loss Curve")
     axes[0].set_xlabel("Epoch")
@@ -56,10 +62,10 @@ def main():
     axes[1].set_title(f"{model_title} Accuracy Curve")
     axes[1].set_xlabel("Epoch")
     axes[1].set_ylabel("Accuracy")
-    axes[1].set_ylim(0.15, 0.72)
+    axes[1].set_ylim(0.15, 0.85)
     axes[1].legend()
 
-    output_path = figure_dir / f"{args.model}_training_curves.png"
+    output_path = figure_dir / f"{history_name}_training_curves.png"
     fig.tight_layout()
     fig.savefig(output_path, bbox_inches="tight")
 

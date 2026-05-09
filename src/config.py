@@ -22,6 +22,19 @@ CLASSES = [
 ]
 
 
+def build_run_name(
+    model_name: str,
+    activation: str = "relu",
+    pooling: str = "avg",
+    normalization: str = "batchnorm",
+) -> str:
+    model_name = model_name.lower()
+    if model_name != "improved":
+        return model_name
+    norm_tag = "bn" if normalization == "batchnorm" else "no_bn"
+    return f"improved_{activation}_{pooling}_{norm_tag}"
+
+
 @dataclass
 class TrainConfig:
     data_dir: Path = DATA_DIR
@@ -38,6 +51,9 @@ class TrainConfig:
     seed: int = 42
     device: str = "auto"
     use_augmentation: bool = False
+    activation: str = "relu"
+    pooling: str = "avg"
+    normalization: str = "batchnorm"
     max_train_samples: Optional[int] = None
     max_valid_samples: Optional[int] = None
     max_test_samples: Optional[int] = None

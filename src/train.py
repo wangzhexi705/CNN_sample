@@ -8,7 +8,7 @@ from torch import nn
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 
-from .config import CLASSES, TrainConfig
+from .config import CLASSES, TrainConfig, build_run_name
 from .dataset import create_dataloaders
 from .models import build_model
 
@@ -124,6 +124,15 @@ def serializable_config(config: TrainConfig):
     return result
 
 
+def resolve_run_name(config: TrainConfig, model_name: str) -> str:
+    return build_run_name(
+        model_name,
+        activation=config.activation,
+        pooling=config.pooling,
+        normalization=config.normalization,
+    )
+
+
 def train_model(config: TrainConfig, model_name: str = "basic"):
     set_seed(config.seed)
     config.checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -131,7 +140,13 @@ def train_model(config: TrainConfig, model_name: str = "basic"):
 
     train_loader, valid_loader, _ = create_dataloaders(config)
     device = get_device(config.device)
-    model = build_model(model_name, config.num_classes).to(device)
+    model = build_model(
+        model_name,
+        config.num_classes,
+        activation=config.activation,
+        pooling=config.pooling,
+        normalization=config.normalization,
+    ).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = AdamW(
         model.parameters(),
@@ -142,10 +157,16 @@ def train_model(config: TrainConfig, model_name: str = "basic"):
 
     best_valid_acc = -1.0
     history = []
+    run_name = resolve_run_name(config, model_name)
 
     print(f"Device: {device}")
     print(f"Data augmentation: {config.use_augmentation}")
     print(f"Train batches: {len(train_loader)}, valid batches: {len(valid_loader)}")
+    if model_name == "improved":
+        print(
+            f"ImprovedCNN settings: activation={config.activation}, "
+            f"pooling={config.pooling}, normalization={config.normalization}"
+        )
 
     for epoch in range(1, config.epochs + 1):
         train_metrics = run_one_epoch(model, train_loader, criterion, device, optimizer)
@@ -183,7 +204,7 @@ def train_model(config: TrainConfig, model_name: str = "basic"):
                 config.checkpoint_path,
             )
 
-    save_history(history, config.output_dir / "logs" / f"{model_name}_history.csv")
+    save_history(history, config.output_dir / "logs" / f"{run_name}_history.csv")
     print(f"Best valid accuracy: {best_valid_acc:.4f}")
     print(f"Saved checkpoint: {config.checkpoint_path}")
     return model
@@ -192,7 +213,13 @@ def train_model(config: TrainConfig, model_name: str = "basic"):
 def evaluate_checkpoint(config: TrainConfig, model_name: str = "basic"):
     _, _, test_loader = create_dataloaders(config)
     device = get_device(config.device)
-    model = build_model(model_name, config.num_classes).to(device)
+    model = build_model(
+        model_name,
+        config.num_classes,
+        activation=config.activation,
+        pooling=config.pooling,
+        normalization=config.normalization,
+    ).to(device)
 
     checkpoint = torch.load(config.checkpoint_path, map_location=device, weights_only=False)
     model.load_state_dict(checkpoint["model_state"])

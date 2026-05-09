@@ -227,18 +227,18 @@ Macro F1: 0.6389
 
 | 指标 | BasicCNN | AugmentedCNN | 对比结论 |
 | --- | --- | --- | --- |
-| 第 30 轮 train accuracy | 65.33% | 62.61% | AugmentedCNN 更低，说明训练样本更难 |
-| 最佳 valid accuracy | 66.76%（第 30 轮） | 66.48%（第 26 轮） | BasicCNN 略高 `0.28` 个百分点 |
+| 第 30 轮 train accuracy | 70.24% | 62.61% | AugmentedCNN 更低，说明训练样本更难 |
+| 最佳 valid accuracy | 67.33%（第 24 轮） | 66.48%（第 26 轮） | BasicCNN 略高 `0.85` 个百分点 |
 | 第 30 轮 valid accuracy | 66.76% | 65.62% | BasicCNN 略高 |
-| Test accuracy | 65.00% | 64.10% | BasicCNN 略高 `0.90` 个百分点 |
-| Test loss | 0.9537 | 0.9769 | BasicCNN 更低 |
-| Macro F1 | 64.85% | 63.89% | BasicCNN 略优 |
+| Test accuracy | 65.80% | 64.10% | BasicCNN 略高 `1.70` 个百分点 |
+| Test loss | 0.9367 | 0.9769 | BasicCNN 更低 |
+| Macro F1 | 65.58% | 63.89% | BasicCNN 略优 |
 
 从对比结果可以得到以下结论：
 
-1. **当前这组实验中，数据增强没有带来最终精度提升。** 无论是最佳验证集准确率还是测试集准确率，AugmentedCNN 都略低于 BasicCNN。
-2. **数据增强确实提高了训练难度。** AugmentedCNN 的训练准确率明显低于 BasicCNN，但验证准确率与其接近，说明增强策略起到了正则化作用，只是当前收益还不足以转化为更高的最终测试精度。
-3. **不同类别受到增强的影响并不一致。** AugmentedCNN 在 `airplane`、`bird`、`horse`、`monkey`、`truck` 等类别上有小幅改善，但在 `car`、`deer`、`dog`、`ship` 等类别上略有下降，因此整体平均指标没有超过 BasicCNN。
+1. **当前这组实验中，数据增强没有带来最终精度提升。** 无论是最佳验证集准确率还是测试集准确率，AugmentedCNN 都低于这次重新训练后的 BasicCNN。
+2. **数据增强确实提高了训练难度。** AugmentedCNN 的训练准确率明显低于 BasicCNN，但验证准确率差距相对较小，说明增强策略起到了正则化作用，只是当前收益还不足以转化为更高的最终测试精度。
+3. **新的 BasicCNN 基线更强。** 这次 BasicCNN 的第 `30` 轮训练准确率提升到 `70.24%`，测试准确率达到 `65.80%`，因此与 AugmentedCNN 的差距相比之前更明显。
 4. **当前实验结果仍然具有分析价值。** 在课程项目中，实验结论不一定必须是“增强后更好”。当前结果表明：在固定网络结构和 `30` 轮训练设置下，直接加入较强的数据增强并不一定立即提升性能，说明增强策略、训练轮数和优化参数之间需要协同调整。
 
 如果后续继续优化 AugmentedCNN，可以尝试以下方向：
