@@ -1,12 +1,13 @@
 import argparse
 
 from src.config import TrainConfig, build_run_name
+from src.gradcam import generate_gradcam
 from src.train import evaluate_checkpoint, train_model
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="STL-10 image classification")
-    parser.add_argument("--mode", choices=["train", "eval"], default="train")
+    parser.add_argument("--mode", choices=["train", "eval", "gradcam"], default="train")
     parser.add_argument("--model", choices=["basic", "augmented", "improved"], default="basic")
     parser.add_argument("--activation", choices=["relu", "sigmoid", "tanh"], default="relu")
     parser.add_argument("--pooling", choices=["max", "avg"], default="avg")
@@ -20,6 +21,24 @@ def parse_args():
     parser.add_argument("--max-train-samples", type=int, default=None)
     parser.add_argument("--max-valid-samples", type=int, default=None)
     parser.add_argument("--max-test-samples", type=int, default=None)
+    parser.add_argument("--image-path", type=str, default=None)
+    parser.add_argument("--split", choices=["train", "test"], default="test")
+    parser.add_argument("--sample-index", type=int, default=0)
+    parser.add_argument("--class-name", choices=[
+        "airplane",
+        "bird",
+        "car",
+        "cat",
+        "deer",
+        "dog",
+        "horse",
+        "monkey",
+        "ship",
+        "truck",
+    ], default=None)
+    parser.add_argument("--target-class", type=str, default=None)
+    parser.add_argument("--alpha", type=float, default=0.45)
+    parser.add_argument("--output-tag", type=str, default=None)
     return parser.parse_args()
 
 
@@ -52,6 +71,18 @@ def main():
         train_model(config, model_name=args.model)
     elif args.mode == "eval":
         evaluate_checkpoint(config, model_name=args.model)
+    elif args.mode == "gradcam":
+        generate_gradcam(
+            config,
+            model_name=args.model,
+            image_path=args.image_path,
+            split=args.split,
+            sample_index=args.sample_index,
+            class_name=args.class_name,
+            target_class=args.target_class,
+            alpha=args.alpha,
+            output_tag=args.output_tag,
+        )
 
 
 if __name__ == "__main__":

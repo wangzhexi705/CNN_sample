@@ -1,0 +1,20 @@
+{
+  "model_name": "augmented",
+  "run_name": "augmented",
+  "checkpoint_path": "/root/shared-nvme/project/checkpoints/augmented_cnn_best.pt",
+  "image_path": "/root/shared-nvme/project/STL10/test/airplane/00059.png",
+  "split": "test",
+  "sample_index": 0,
+  "class_filter": null,
+  "true_label": "airplane",
+  "predicted_label": "ship",
+  "predicted_confidence": 0.4799460172653198,
+  "target_label": "ship",
+  "hook_layer": "features[3].block[3]",
+  "artifacts": {
+    "original": "/root/shared-nvme/project/outputs/gradcam/augmented/test_000_airplane_original.png",
+    "heatmap": "/root/shared-nvme/project/outputs/gradcam/augmented/test_000_airplane_heatmap.png",
+    "overlay": "/root/shared-nvme/project/outputs/gradcam/augmented/test_000_airplane_overlay.png",
+    "panel": "/root/shared-nvme/project/outputs/gradcam/augmented/test_000_airplane_panel.png"
+  }
+}

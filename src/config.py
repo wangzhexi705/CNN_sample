@@ -7,6 +7,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT_DIR / "STL10"
 CHECKPOINT_DIR = ROOT_DIR / "checkpoints"
 OUTPUT_DIR = ROOT_DIR / "outputs"
+GRADCAM_OUTPUT_DIR = OUTPUT_DIR / "gradcam"
 
 CLASSES = [
     "airplane",

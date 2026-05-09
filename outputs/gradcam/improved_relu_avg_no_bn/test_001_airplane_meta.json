@@ -1,0 +1,20 @@
+{
+  "model_name": "improved",
+  "run_name": "improved_relu_avg_no_bn",
+  "checkpoint_path": "/root/shared-nvme/project/checkpoints/improved_relu_avg_no_bn_cnn_best.pt",
+  "image_path": "/root/shared-nvme/project/STL10/test/airplane/00060.png",
+  "split": "test",
+  "sample_index": 1,
+  "class_filter": null,
+  "true_label": "airplane",
+  "predicted_label": "airplane",
+  "predicted_confidence": 0.954596221446991,
+  "target_label": "airplane",
+  "hook_layer": "features[3].block[3]",
+  "artifacts": {
+    "original": "/root/shared-nvme/project/outputs/gradcam/improved_relu_avg_no_bn/test_001_airplane_original.png",
+    "heatmap": "/root/shared-nvme/project/outputs/gradcam/improved_relu_avg_no_bn/test_001_airplane_heatmap.png",
+    "overlay": "/root/shared-nvme/project/outputs/gradcam/improved_relu_avg_no_bn/test_001_airplane_overlay.png",
+    "panel": "/root/shared-nvme/project/outputs/gradcam/improved_relu_avg_no_bn/test_001_airplane_panel.png"
+  }
+}
