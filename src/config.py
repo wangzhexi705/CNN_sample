@@ -28,7 +28,10 @@ def build_run_name(
     activation: str = "relu",
     pooling: str = "avg",
     normalization: str = "batchnorm",
+    run_name: Optional[str] = None,
 ) -> str:
+    if run_name is not None:
+        return run_name
     model_name = model_name.lower()
     if model_name != "improved":
         return model_name
@@ -47,6 +50,9 @@ class TrainConfig:
     epochs: int = 20
     learning_rate: float = 1e-3
     weight_decay: float = 1e-4
+    momentum: float = 0.9
+    optimizer: str = "adamw"
+    run_name: Optional[str] = None
     val_ratio: float = 0.15
     num_workers: int = 0
     seed: int = 42

@@ -15,6 +15,10 @@ def parse_args():
     parser.add_argument("--epochs", type=int, default=30)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--optimizer", choices=["adamw", "adam", "sgd"], default="adamw")
+    parser.add_argument("--momentum", type=float, default=0.9)
+    parser.add_argument("--weight-decay", type=float, default=1e-4)
+    parser.add_argument("--run-name", type=str, default=None)
     parser.add_argument("--val-ratio", type=float, default=0.15)
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
@@ -49,11 +53,16 @@ def main():
         activation=args.activation,
         pooling=args.pooling,
         normalization=args.normalization,
+        run_name=args.run_name,
     )
     config = TrainConfig(
         epochs=args.epochs,
         batch_size=args.batch_size,
         learning_rate=args.lr,
+        weight_decay=args.weight_decay,
+        momentum=args.momentum,
+        optimizer=args.optimizer,
+        run_name=args.run_name,
         val_ratio=args.val_ratio,
         num_workers=args.num_workers,
         device=args.device,

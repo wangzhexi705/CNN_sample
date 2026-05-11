@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch import nn
-from torch.optim import AdamW
+from torch.optim import Adam, AdamW, SGD
 from torch.optim.lr_scheduler import CosineAnnealingLR
 
 from .config import CLASSES, TrainConfig, build_run_name
@@ -130,7 +130,32 @@ def resolve_run_name(config: TrainConfig, model_name: str) -> str:
         activation=config.activation,
         pooling=config.pooling,
         normalization=config.normalization,
+        run_name=config.run_name,
     )
+
+
+def build_optimizer(config: TrainConfig, parameters):
+    optimizer_name = config.optimizer.lower()
+    if optimizer_name == "adamw":
+        return AdamW(
+            parameters,
+            lr=config.learning_rate,
+            weight_decay=config.weight_decay,
+        )
+    if optimizer_name == "adam":
+        return Adam(
+            parameters,
+            lr=config.learning_rate,
+            weight_decay=config.weight_decay,
+        )
+    if optimizer_name == "sgd":
+        return SGD(
+            parameters,
+            lr=config.learning_rate,
+            momentum=config.momentum,
+            weight_decay=config.weight_decay,
+        )
+    raise ValueError(f"Unsupported optimizer: {config.optimizer}")
 
 
 def train_model(config: TrainConfig, model_name: str = "basic"):
@@ -148,11 +173,7 @@ def train_model(config: TrainConfig, model_name: str = "basic"):
         normalization=config.normalization,
     ).to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = AdamW(
-        model.parameters(),
-        lr=config.learning_rate,
-        weight_decay=config.weight_decay,
-    )
+    optimizer = build_optimizer(config, model.parameters())
     scheduler = CosineAnnealingLR(optimizer, T_max=config.epochs)
 
     best_valid_acc = -1.0
@@ -161,6 +182,11 @@ def train_model(config: TrainConfig, model_name: str = "basic"):
 
     print(f"Device: {device}")
     print(f"Data augmentation: {config.use_augmentation}")
+    print(
+        f"Optimizer: {config.optimizer} lr={config.learning_rate} "
+        f"weight_decay={config.weight_decay} momentum={config.momentum}"
+    )
+    print(f"Run name: {run_name}")
     print(f"Train batches: {len(train_loader)}, valid batches: {len(valid_loader)}")
     if model_name == "improved":
         print(

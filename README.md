@@ -97,6 +97,40 @@ python main.py --mode train --model improved --activation relu --pooling avg --n
 python main.py --mode train --model improved --activation relu --pooling avg --normalization none
 ```
 
+### Hyperparameter and Optimizer Experiments
+
+Use `--run-name` to save learning-rate or optimizer experiments without overwriting the default `basic_history.csv` and `basic_cnn_best.pt` files.
+
+Learning-rate examples:
+
+```bash
+python main.py --mode train --model basic --optimizer adamw --lr 0.0001 --run-name basic_adamw_lr1e-4
+python main.py --mode train --model basic --optimizer adamw --lr 0.0005 --run-name basic_adamw_lr5e-4
+python main.py --mode train --model basic --optimizer adamw --lr 0.001  --run-name basic_adamw_lr1e-3
+python main.py --mode train --model basic --optimizer adamw --lr 0.003  --run-name basic_adamw_lr3e-3
+```
+
+Optimizer comparison examples:
+
+```bash
+python main.py --mode train --model basic --optimizer adamw --lr 0.001 --weight-decay 0.0001 --run-name basic_adamw_lr1e-3
+python main.py --mode train --model basic --optimizer adam  --lr 0.001 --weight-decay 0.0001 --run-name basic_adam_lr1e-3
+python main.py --mode train --model basic --optimizer sgd   --lr 0.01  --momentum 0.9 --weight-decay 0.0005 --run-name basic_sgd_lr1e-2
+```
+
+Evaluate a specific experiment by passing the same `--run-name`:
+
+```bash
+python main.py --mode eval --model basic --run-name basic_adamw_lr1e-3
+```
+
+A run named `basic_adamw_lr1e-3` saves:
+
+```text
+checkpoints/basic_adamw_lr1e-3_cnn_best.pt
+outputs/logs/basic_adamw_lr1e-3_history.csv
+```
+
 Useful quick test:
 
 ```bash
@@ -137,6 +171,57 @@ saves:
 checkpoints/improved_relu_avg_bn_cnn_best.pt
 outputs/logs/improved_relu_avg_bn_history.csv
 outputs/figures/improved_relu_avg_bn_training_curves.png
+```
+
+## Grad-CAM Visualization
+
+Grad-CAM can be used to visualize which image regions contribute most to a model prediction.
+Detailed notes are in `docs/GradCAM可视化说明.md`.
+
+Generate Grad-CAM for a BasicCNN test sample:
+
+```bash
+python main.py --mode gradcam --model basic --split test --sample-index 0 --device cpu
+```
+
+Generate Grad-CAM for AugmentedCNN:
+
+```bash
+python main.py --mode gradcam --model augmented --split test --sample-index 0 --device cpu
+```
+
+Generate Grad-CAM for an ImprovedCNN configuration:
+
+```bash
+python main.py --mode gradcam --model improved --activation relu --pooling avg --normalization none --split test --sample-index 0 --device cpu
+```
+
+You can also select a sample within a specific class:
+
+```bash
+python main.py --mode gradcam --model basic --split test --class-name airplane --sample-index 1 --device cpu
+```
+
+Or target a specific class instead of the predicted class:
+
+```bash
+python main.py --mode gradcam --model basic --split test --sample-index 0 --target-class airplane --device cpu
+```
+
+Grad-CAM saves artifacts under:
+
+```text
+outputs/gradcam/<run_name>/
+```
+
+Each run writes:
+
+```text
+*_original.png
+*_heatmap.png
+*_overlay.png
+*_panel.png
+*_meta.json
 ```
 
 ## Plot Curves

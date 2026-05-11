@@ -172,6 +172,7 @@ def generate_gradcam(
         activation=config.activation,
         pooling=config.pooling,
         normalization=config.normalization,
+        run_name=config.run_name,
     )
     model = build_model(
         model_name,
